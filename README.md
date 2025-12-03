@@ -145,12 +145,12 @@ If you're not interested in the Application or Plugin parts of this project you 
 
 ### Folding in Foleys Plugin GUI Magic
 
-1) install foleys_gui_magic by cloning the repository into the thirdparty folder.
+- 1) install foleys_gui_magic by cloning the repository into the thirdparty folder.
 git submodule add https://github.com/ffAudio/foleys_gui_magic.git
 
-2) update the juce module to use version 8. This was done by using  git pull origin master while in the juce repository, which is located in thirdparty/juce
+- 2) update the juce module to use version 8. This was done by using  git pull origin master while in the juce repository, which is located in thirdparty/juce
 
-3) Add foley to the App.cmake file 
+- 3) Add foley to the App.cmake file 
 this has to go above juce_generate_juce_header(RNBOApp)
 
 juce_add_module(thirdparty/foleys_gui_magic/modules/foleys_gui_magic)
@@ -165,7 +165,7 @@ foleys_gui_magic
 Add to the "target link libraries"
 foleys_gui_magic 
 
-4)  Erase this bit of code in MainComponent.cpp
+- 4)  Erase this bit of code in MainComponent.cpp
         // let's listen to all midi inputs
         // enable all midi inputs
         StringArray midiInputDevices = MidiInput::getAvailableDevices();
@@ -175,7 +175,7 @@ foleys_gui_magic
         _deviceManager.addMidiInputCallback("", &_audioProcessorPlayer);
 
 
-5) Find the RNBO_JuceAudioProcessor.h and the RNBO_JuceAudioProcssor.cpp in 
+- 5) Find the RNBO_JuceAudioProcessor.h and the RNBO_JuceAudioProcssor.cpp in 
 export->rnbo->adpaters->juce
 
 Change the .h file by adding 
@@ -190,11 +190,11 @@ remove the function: void JuceAudioProcessor::getStateInformation (MemoryBlock& 
 remove the function: void JuceAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 
 
-6) In the src folder, change the customAudioProcessor.h so that you remove the following function:
+- 6) In the src folder, change the customAudioProcessor.h so that you remove the following function:
 
 juce::AudioProcessorEditor* createEditor()
 
-7) In the src folder, change the customAudioProcessor.cpp so that you removed the following funcitons:
+- 7) In the src folder, change the customAudioProcessor.cpp so that you removed the following funcitons:
 
 AudioProcessorEditor* CustomAudioProcessor::createEditor() 
 
