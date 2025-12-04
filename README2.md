@@ -2,8 +2,8 @@
 
 ## You have to do this each time you export your RNBO code to the export folder.
 
-// You have to do this!
-0) Find the RNBO_JuceAudioProcessor.h and the RNBO_JuceAudioProcssor.cpp in 
+
+### 0) Find the RNBO_JuceAudioProcessor.h and the RNBO_JuceAudioProcssor.cpp in 
 export->rnbo->adpaters->juce
 
 - Change the .h file by adding 
