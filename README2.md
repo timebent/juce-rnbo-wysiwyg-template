@@ -1,4 +1,4 @@
-### Alterations:
+# Alterations:
 
 ## You have to do this each time you export your RNBO code to the export folder.
 
