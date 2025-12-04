@@ -4,7 +4,7 @@ This version of the template differs in that it attempts to fold in Foleys Plugi
 
 See README2.md for instructions on what to do BEFORE you start using CMake to build for your build system!!!
 
-// Original Text of Cycling74s readme.
+### Original Text of Cycling74s readme.
 
 So you want to build your own DAW or a Plugin? This template should get you started with your own Standalone Desktop application and Audio Plugin, using the source code export feature of RNBO, part of [Max 8](https://cycling74.com/max8/) made by [Cycling '74](https://cycling74.com/). 
 
