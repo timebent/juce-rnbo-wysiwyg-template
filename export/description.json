@@ -3,13 +3,34 @@
     {
       "type": "ParameterTypeNumber",
       "index": 0,
-      "name": "freq",
-      "paramId": "freq",
-      "minimum": 20,
-      "maximum": 3000,
+      "name": "index",
+      "paramId": "index",
+      "minimum": 1,
+      "maximum": 7,
       "exponent": 1,
       "steps": 0,
-      "initialValue": 440,
+      "initialValue": 1,
+      "isEnum": false,
+      "enumValues": [],
+      "displayName": "",
+      "unit": "",
+      "order": 0,
+      "displayorder": "-",
+      "debug": false,
+      "visible": true,
+      "signalIndex": null,
+      "ioType": "IOTypeUndefined"
+    },
+    {
+      "type": "ParameterTypeNumber",
+      "index": 1,
+      "name": "volume",
+      "paramId": "volume",
+      "minimum": 0,
+      "maximum": 1,
+      "exponent": 1,
+      "steps": 0,
+      "initialValue": 0.1,
       "isEnum": false,
       "enumValues": [],
       "displayName": "",
@@ -22,30 +43,52 @@
       "ioType": "IOTypeUndefined"
     }
   ],
-  "numParameters": 1,
+  "numParameters": 2,
   "numSignalInParameters": 0,
   "numSignalOutParameters": 0,
   "numInputChannels": 0,
-  "numOutputChannels": 1,
-  "numMidiInputPorts": 0,
+  "numOutputChannels": 2,
+  "numMidiInputPorts": 1,
   "numMidiOutputPorts": 0,
   "transportUsed": false,
   "externalDataRefs": [],
   "patcherSerial": 0,
   "inports": [],
-  "outports": [],
-  "inlets": [],
+  "outports": [
+    {
+      "tag": "out3",
+      "meta": ""
+    }
+  ],
+  "inlets": [
+    {
+      "type": "midi"
+    }
+  ],
   "outlets": [
     {
       "type": "signal",
       "index": 1,
       "tag": "out1",
       "meta": ""
+    },
+    {
+      "type": "signal",
+      "index": 2,
+      "tag": "out2",
+      "meta": ""
+    },
+    {
+      "type": "event",
+      "index": 3,
+      "tag": "out3",
+      "meta": ""
     }
   ],
   "presetid": "rnbo",
   "meta": {
     "architecture": "x64",
+    "filename": "presetTryRNBO.maxpat",
     "rnboobjname": "rnbomatic",
     "maxversion": "9.0.3",
     "rnboversion": "1.4.1",
