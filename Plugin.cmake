@@ -20,7 +20,7 @@ juce_add_plugin(RNBOAudioPlugin
   # VERSION ...                        # Set this if the plugin version is different to the project version
   # ICON_BIG ...                       # ICON_* arguments specify a path to an image file to use as an icon for the Standalone
   # ICON_SMALL ...
-  COMPANY_NAME "Your Company Name"     # Specify the name of the plugin's author
+  COMPANY_NAME "Thompson"     # Specify the name of the plugin's author
   IS_SYNTH TRUE                        # Is this a synth or an effect?
   NEEDS_MIDI_INPUT TRUE                # Does the plugin need midi input?
   NEEDS_MIDI_OUTPUT TRUE               # Does the plugin need midi output?
@@ -30,7 +30,7 @@ juce_add_plugin(RNBOAudioPlugin
   PLUGIN_MANUFACTURER_CODE "Exmp"      # A four-character manufacturer id with at least one upper-case character
   PLUGIN_CODE "Rnb0"                   # A unique four-character plugin id with at least one upper-case character
   FORMATS ${PLUGIN_FORMATS}            # The formats to build. Other valid formats are: AAX Unity VST AU AUv3
-  PRODUCT_NAME "RNBO Plugin")          # The name of the final executable, which can differ from the target name
+  PRODUCT_NAME "WSYWIGTestPlugin")          # The name of the final executable, which can differ from the target name
 
 # `juce_generate_juce_header` will create a JuceHeader.h for a given target, which will be generated
 # into your build tree. This should be included with `#include <JuceHeader.h>`. The include path for
@@ -54,7 +54,6 @@ juce_generate_juce_header(RNBOAudioPlugin)
 # that will be built into the target. This is a standard CMake command.
 
 target_sources(RNBOAudioPlugin PRIVATE
-  # "${RNBO_CPP_DIR}/adapters/juce/RNBO_JuceAudioProcessor.cpp"
   "src/adapters/juce/RNBO_JuceAudioProcessor.cpp"
   "${RNBO_CPP_DIR}/adapters/juce/RNBO_JuceAudioProcessorEditor.cpp"
   "${RNBO_CPP_DIR}/RNBO.cpp"
@@ -62,6 +61,7 @@ target_sources(RNBOAudioPlugin PRIVATE
   src/Plugin.cpp
   src/CustomAudioEditor.cpp
   src/CustomAudioProcessor.cpp
+  src/CustomKnob.cpp
   )
 
 if (EXISTS ${RNBO_BINARY_DATA_FILE})
@@ -73,7 +73,6 @@ target_include_directories(RNBOAudioPlugin
   ${RNBO_CPP_DIR}/
   ${RNBO_CPP_DIR}/src
   ${RNBO_CPP_DIR}/common/
-  # ${RNBO_CPP_DIR}/adapters/juce/
   src/adapters/juce/
   ${RNBO_CPP_DIR}/src/3rdparty/
   src

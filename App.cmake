@@ -14,7 +14,7 @@ juce_add_gui_app(RNBOApp
   # ICON_SMALL ...
   # DOCUMENT_EXTENSIONS ...           # Specify file extensions that should be associated with this app
   COMPANY_NAME "Georgia Southern Music Tech"            # Specify the name of the app's author
-  PRODUCT_NAME "Awesome Plugin")    # The name of the final executable, which can differ from the target name
+  PRODUCT_NAME "WSYWIG Application")    # The name of the final executable, which can differ from the target name
 
 # `juce_generate_juce_header` will create a JuceHeader.h for a given target, which will be generated
 # into your build tree. This should be included with `#include <JuceHeader.h>`. The include path for
@@ -45,13 +45,10 @@ target_sources(RNBOApp
   src/CustomAudioEditor.cpp
   src/CustomAudioProcessor.cpp
   src/CustomKnob.cpp
-
   ${RNBO_CLASS_FILE}
-
   ${RNBO_CPP_DIR}/RNBO.cpp
   ${RNBO_CPP_DIR}/adapters/juce/RNBO_JuceAudioProcessorUtils.cpp
   ${RNBO_CPP_DIR}/adapters/juce/RNBO_JuceAudioProcessorEditor.cpp
-  # ${RNBO_CPP_DIR}/adapters/juce/RNBO_JuceAudioProcessor.cpp
   src/adapters/juce/RNBO_JuceAudioProcessor.cpp
   )
 
@@ -64,7 +61,6 @@ target_include_directories(RNBOApp
   ${RNBO_CPP_DIR}/
   ${RNBO_CPP_DIR}/src
   ${RNBO_CPP_DIR}/common/
-  # ${RNBO_CPP_DIR}/adapters/juce/
   src/adapters/juce/
   ${RNBO_CPP_DIR}/src/3rdparty/
   src
