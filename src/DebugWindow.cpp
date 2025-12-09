@@ -1,88 +1,62 @@
 #include "DebugWindow.h"
 
-// Simple container component that paints a background
-class PlotContainer : public juce::Component
-{
-public:
-    void paint(juce::Graphics& g) override
-    {
-        g.fillAll(juce::Colours::black);
-        
-        // Draw a dividing line in the middle
-        g.setColour(juce::Colours::darkgrey);
-        auto bounds = getLocalBounds();
-        g.drawLine(0, bounds.getHeight() / 2.0f, bounds.getWidth(), bounds.getHeight() / 2.0f, 2.0f);
-    }
-};
-
+// Give the window a color 
 DebugWindow::DebugWindow()
-    : juce::DocumentWindow ("Debug", juce::Colours::darkgrey, juce::DocumentWindow::closeButton)
+    : juce::DocumentWindow ("Debug", juce::Colours::darkgrey, juce::DocumentWindow::allButtons)
 {
-    try
-    {
         setUsingNativeTitleBar(true);
         setAlwaysOnTop(true);
+        setResizable(true, false);
         
-        // Initialize mono buffer
+        // Initialize mono buffer with the window
         monoBuffer.setSize(1, 512);
         
-        // Create the plot sources
-        oscilloscope.reset(new foleys::MagicOscilloscope());
+        // Create the plot sources (configured later in prepareToPlay with sample rate)
+        oscilloscope = magicState.createAndAddObject<foleys::MagicOscilloscope>("waveform");
         analyser = magicState.createAndAddObject<foleys::MagicAnalyser>("input");
         
-        if (oscilloscope)
-            oscilloscope->prepareToPlay(44100.0, 512);
-        if (analyser)
-            analyser->prepareToPlay(44100.0, 512);
-        
-        // Create the plot components
-        oscilloscopeComponent = new foleys::MagicPlotComponent();
-        analyserComponent = new foleys::MagicPlotComponent();
-        
-        if (!oscilloscopeComponent || !analyserComponent)
-            throw std::runtime_error("Failed to create components");
-        
-        // Set the plot sources
-        oscilloscopeComponent->setPlotSource(oscilloscope.get());
-        analyserComponent->setPlotSource(analyser);
-        
-        oscilloscopeComponent->setColour(foleys::MagicPlotComponent::plotColourId, juce::Colours::lime);
-        analyserComponent->setColour(foleys::MagicPlotComponent::plotColourId, juce::Colours::cyan);
-        
-        // Set fill colors transparent
-        oscilloscopeComponent->setColour(foleys::MagicPlotComponent::plotFillColourId, juce::Colours::transparentBlack);
-        analyserComponent->setColour(foleys::MagicPlotComponent::plotFillColourId, juce::Colours::transparentBlack);
-        
-        // Make sure components are visible
-        oscilloscopeComponent->setVisible(true);
-        analyserComponent->setVisible(true);
-        
-        // Make them non-opaque
-        oscilloscopeComponent->setOpaque(false);
-        analyserComponent->setOpaque(false);
-        
-        // Create container
-        container = new PlotContainer();
+        // Create and setup PlotContainer (private nested class) 
+        // It has MagicPlotComponents as members
+        container = std::make_unique<PlotContainer>();
         container->setOpaque(true);
-        container->addAndMakeVisible(oscilloscopeComponent);
-        container->addAndMakeVisible(analyserComponent);
         
-        setContentOwned(container, true);
+        // Configure oscilloscope component
+        container->oscilloscopeComponent.setPlotSource(oscilloscope);
+        container->oscilloscopeComponent.setColour(foleys::MagicPlotComponent::plotColourId, juce::Colours::lime);
+        container->oscilloscopeComponent.setColour(foleys::MagicPlotComponent::plotFillColourId, juce::Colours::transparentBlack);
+        container->oscilloscopeComponent.setVisible(true);
+        container->oscilloscopeComponent.setOpaque(false);
+        container->addAndMakeVisible(container->oscilloscopeComponent);
+        
+        // Configure analyser component
+        container->analyserComponent.setPlotSource(analyser);
+        container->analyserComponent.setColour(foleys::MagicPlotComponent::plotColourId, juce::Colours::cyan);
+        container->analyserComponent.setColour(foleys::MagicPlotComponent::plotFillColourId, juce::Colours::transparentBlack);
+        container->analyserComponent.setVisible(true);
+        container->analyserComponent.setOpaque(false);
+        container->addAndMakeVisible(container->analyserComponent);
+        
+        // Set the container as the content component of the window
+        // Content component will be deleted by DocumentWindow destructor
+        // Content component is the main child component of the window.
+        setContentNonOwned(container.get(), true);
         centreWithSize(600, 400);
         setVisible(true);
         
         // Start timer to trigger repaints
         startTimer(50); // 20 fps refresh rate
-    }
-    catch (const std::exception& e)
-    {
-        juce::Logger::writeToLog(juce::String("DebugWindow error: ") + e.what());
-    }
 }
 
 DebugWindow::~DebugWindow()
 {
     stopTimer();
+    clearContentComponent();
+    /* 
+    1) Stop the timer
+    2) Clear the content component (detach container from window)
+    3) Window destructs
+    4) container unique_ptr destructs
+    */
 }
 
 void DebugWindow::closeButtonPressed()
@@ -94,35 +68,30 @@ void DebugWindow::timerCallback()
 {
     // Trigger repaints
     if (container)
+    {
         container->repaint();
-    if (analyserComponent)
-        analyserComponent->repaint();
+        container->analyserComponent.repaint();
+        container->oscilloscopeComponent.repaint();
+    }
 }
 
 void DebugWindow::resized()
 {
-    if (container)
-    {
-        container->setBounds(getLocalBounds());
-        
-        auto area = container->getLocalBounds();
-        auto oscArea = area.removeFromTop(area.getHeight() / 2);
-        
-        if (oscilloscopeComponent)
-            oscilloscopeComponent->setBounds(oscArea);
-        if (analyserComponent)
-            analyserComponent->setBounds(area);
-    }
-    
+    // Guard against resized() being called before components are initialized
+    // This prevents a segmentation fault that was happening ... so don't take it out!
+    if (!container)
+        return;
+
+    // Container's resized() will handle layout of plot components
+    container->setBounds(getLocalBounds());
+
     juce::DocumentWindow::resized();
 }
 
 void DebugWindow::prepareToPlay(double sampleRate, int samplesPerBlockExpected)
 {
-    if (oscilloscope)
-        oscilloscope->prepareToPlay(sampleRate, samplesPerBlockExpected);
-    if (analyser)
-        analyser->prepareToPlay(sampleRate, samplesPerBlockExpected);
+    oscilloscope->prepareToPlay(sampleRate, samplesPerBlockExpected);
+    analyser->prepareToPlay(sampleRate, samplesPerBlockExpected);
 }
 
 void DebugWindow::pushAudioSamples(const juce::AudioBuffer<float>& buffer)
@@ -130,6 +99,7 @@ void DebugWindow::pushAudioSamples(const juce::AudioBuffer<float>& buffer)
     if (buffer.getNumSamples() <= 0 || buffer.getNumChannels() <= 0)
         return;
     
+        // leaving this try and catch in place to avoid any potential crashes
     try
     {
         // Ensure our mono buffer has the right size
@@ -161,11 +131,9 @@ void DebugWindow::pushAudioSamples(const juce::AudioBuffer<float>& buffer)
                 monoData[i] = (channel0[i] + channel1[i]) * 0.5f;
         }
         
-        // Push to oscilloscope and analyser
-        if (oscilloscope)
-            oscilloscope->pushSamples(monoBuffer);
-        if (analyser)
-            analyser->pushSamples(monoBuffer);
+        // Push to oscilloscope and analyser 
+        oscilloscope->pushSamples(monoBuffer);
+        analyser->pushSamples(monoBuffer);
     }
     catch (const std::exception& e)
     {
