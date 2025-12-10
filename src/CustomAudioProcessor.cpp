@@ -9,6 +9,7 @@
 #include <rnbo_description.h>
 #endif
 
+
 //create an instance of our custom plugin, optionally set description, presets and binary data (datarefs)
 CustomAudioProcessor* CustomAudioProcessor::CreateDefault() {
 	nlohmann::json patcher_desc, presets;

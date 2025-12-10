@@ -16,6 +16,14 @@ juce_add_gui_app(RNBOApp
   COMPANY_NAME "Georgia Southern Music Tech"            # Specify the name of the app's author
   PRODUCT_NAME "WSYWIG Application")    # The name of the final executable, which can differ from the target name
 
+option(ENABLE_RTCHECK "Enable RTCheck debug library" ON)
+# Unfortunately RTCHECK doesn't work on windows
+if(ENABLE_RTCHECK AND NOT WIN32)
+  add_subdirectory(thirdparty/rtcheck)
+endif()
+
+
+
 # `juce_generate_juce_header` will create a JuceHeader.h for a given target, which will be generated
 # into your build tree. This should be included with `#include <JuceHeader.h>`. The include path for
 # this header will be automatically added to the target. The main function of the JuceHeader is to
@@ -97,10 +105,12 @@ target_link_libraries(RNBOApp
   juce::juce_cryptography
   foleys_gui_magic
   RNBOApp_BinaryData
-
-
   PUBLIC
   juce::juce_recommended_config_flags
   juce::juce_recommended_lto_flags
   juce::juce_recommended_warning_flags)
 
+
+if (ENABLE_RTCHECK AND NOT WIN32)
+  target_link_libraries(RNBOApp PRIVATE rtcheck)
+endif()
