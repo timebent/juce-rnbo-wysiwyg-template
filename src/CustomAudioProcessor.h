@@ -32,6 +32,8 @@ private:
 #endif
     foleys::MagicAnalyser* analyser = nullptr;
     foleys::MagicOscilloscope* oscilloscope = nullptr;
+    // foleys::MagicLevelMeter* levelMeter = nullptr;
+    foleys::MagicLevelSource* levelSource = nullptr;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CustomAudioProcessor)
 };

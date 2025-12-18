@@ -40,6 +40,7 @@ CustomAudioProcessor::CustomAudioProcessor(
     // Create the analyser and oscilloscope via the magic state
     analyser = magicState.createAndAddObject<foleys::MagicAnalyser>("analyser");
     oscilloscope = magicState.createAndAddObject<foleys::MagicOscilloscope>("oscilloscope");
+    levelSource = magicState.createAndAddObject<foleys::MagicLevelSource>("levelOutput");
 }
 
 void CustomAudioProcessor::initialiseBuilder(foleys::MagicGUIBuilder& builder)
@@ -63,6 +64,9 @@ void CustomAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlockE
     // Prepare the oscilloscope
     if (oscilloscope)
         oscilloscope->prepareToPlay(sampleRate, 0);
+    // Prepare teh level meter.
+    if (levelSource)
+        levelSource->setupSource(getTotalNumOutputChannels(), sampleRate, 500);
 
 #ifdef JUCE_STANDALONE_APPLICATION
     // Notify debug window
@@ -85,6 +89,8 @@ void CustomAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::
         // Push samples to the oscilloscope
         if (oscilloscope)
             oscilloscope->pushSamples(buffer);
+        if (levelSource)
+            levelSource->pushSamples((buffer));
     }
     
 #ifdef JUCE_STANDALONE_APPLICATION
