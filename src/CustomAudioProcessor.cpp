@@ -76,12 +76,16 @@ void CustomAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::
     // Call parent processBlock
     RNBO::JuceAudioProcessor::processBlock(buffer, midiMessages);
     
-    // Push samples to the analyser
-    if (analyser)
-        analyser->pushSamples(buffer);
-    // Push samples to the oscilloscope
-    if (oscilloscope)
-     oscilloscope->pushSamples(buffer);
+    // Only push samples if buffer is valid
+    if (buffer.getNumChannels() > 0 && buffer.getNumSamples() > 0)
+    {
+        // Push samples to the analyser
+        if (analyser)
+            analyser->pushSamples(buffer);
+        // Push samples to the oscilloscope
+        if (oscilloscope)
+            oscilloscope->pushSamples(buffer);
+    }
     
 #ifdef JUCE_STANDALONE_APPLICATION
     // Push samples to debug window
