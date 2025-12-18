@@ -16,6 +16,10 @@ juce_add_gui_app(RNBOApp
   COMPANY_NAME "Georgia Southern Music Tech"            # Specify the name of the app's author
   PRODUCT_NAME "WSYWIG Application")    # The name of the final executable, which can differ from the target name
 
+target_compile_definitions(RNBOApp
+PRIVATE
+    FOLEYS_SHOW_GUI_EDITOR_PALLETTE=1
+)
 # `juce_generate_juce_header` will create a JuceHeader.h for a given target, which will be generated
 # into your build tree. This should be included with `#include <JuceHeader.h>`. The include path for
 # this header will be automatically added to the target. The main function of the JuceHeader is to
@@ -80,7 +84,9 @@ target_compile_definitions(RNBOApp
   JUCE_USE_CURL=0     # If you remove this, add `NEEDS_CURL TRUE` to the `juce_add_gui_app` call
   JUCE_APPLICATION_NAME_STRING="$<TARGET_PROPERTY:RNBOApp,JUCE_PRODUCT_NAME>"
   JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:RNBOApp,JUCE_VERSION>"
-  MY_MAGIC_SRC="${MY_MAGIC_SRC}")
+  MY_MAGIC_SRC="${MY_MAGIC_SRC}"
+  FOLEYS_SHOW_GUI_EDITOR_PALLETTE=1
+  )
 
 
 
